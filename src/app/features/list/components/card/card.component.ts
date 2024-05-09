@@ -1,5 +1,5 @@
 import { MatButtonModule } from '@angular/material/button';
-import { Component, computed, input } from '@angular/core';
+import { Component, EventEmitter, Output, computed, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { IProduct } from '../../../../shared/interfaces/product.inferface';
 
@@ -11,7 +11,12 @@ import { IProduct } from '../../../../shared/interfaces/product.inferface';
   styleUrl: './card.component.scss'
 })
 export class CardComponent {
-
   product = input.required<IProduct>()
   productTitle = computed(() => this.product().title)
+
+  @Output() edit = new EventEmitter()
+
+  onEdit() {
+    this.edit.emit()
+  }
 }
