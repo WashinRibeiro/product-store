@@ -1,15 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { IProduct } from '../../shared/interfaces/product.inferface';
+import { ConfirmationDialogService } from '../../shared/services/confirmation-dialog.service';
 import { ProductsService } from './../../shared/services/products.service';
 import { CardComponent } from './components/card/card.component';
-import {
-  ConfirmationDialogComponent,
-  ConfirmationDialogService,
-} from '../../shared/services/confirmation-dialog.service';
 
 @Component({
   selector: 'app-list',
@@ -18,21 +15,16 @@ import {
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
 })
-export class ListComponent implements OnInit {
-  products: IProduct[] = [];
+export class ListComponent {
+  
+  products = signal<IProduct[]>(
+    inject(ActivatedRoute).snapshot.data['products']
+  );
 
   productsService = inject(ProductsService);
   router = inject(Router);
   matDialog = inject(MatDialog);
   confirmationDialogService = inject(ConfirmationDialogService);
-
-  ngOnInit() {
-    this.productsService.getAll().subscribe({
-      next: (products: any) => {
-        this.products = products;
-      },
-    });
-  }
 
   onEdit(product: IProduct) {
     this.router.navigate(['/edit-product', product.id]);
@@ -45,8 +37,8 @@ export class ListComponent implements OnInit {
       .subscribe(() => {
         this.productsService.delete(product.id).subscribe(() => {
           this.productsService.getAll().subscribe({
-            next: (products: any) => {
-              this.products = products;
+            next: (products) => {
+              this.products.set(products);
             },
           });
         });

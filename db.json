@@ -1,12 +1,8 @@
 {
   "products": [
     {
-      "id": "85bb",
-      "title": "blusa"
-    },
-    {
-      "id": "151f",
-      "title": "Moletom"
+      "title": "Moletom",
+      "id": "151f"
     }
   ]
 }
